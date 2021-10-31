@@ -7,12 +7,12 @@ class Node;
 
 class Link
 {
+public:
     vector<Node *> node_list;
     unordered_map<string, int> mac_to_id;
     bool direction;
     int index;
 
-public:
     static int assign_link_id;
     int link_id;
 
@@ -40,22 +40,34 @@ public:
 class Node
 {
 
-private:
+public:
     string mac_addr;
     vector<Link *> links;
     unordered_map<string, Link *> routing_table;
 
-public:
     static int assign_node_id;
     int node_id;
 
-    Node(std::string mac_addr, vector<Link *> &links, unordered_map<string, Link *> &routing_table)
+    Node(std::string mac_addr)
     {
         this->mac_addr = mac_addr;
         node_id = ++assign_node_id;
-        this->links = links;
-        this->routing_table = routing_table;
+        this->links = *(new vector<Link *>());
+        this->routing_table = *(new unordered_map<string, Link *>());
         //this->token = token;
+    }
+
+    void register_node_to_link(Link *link)
+    {
+        this->links.push_back(link);
+        link->node_list.push_back(this);
+
+        link->mac_to_id[this->mac_addr] = this->node_id;
+    }
+
+    void print_mac_address()
+    {
+        cout << this->mac_addr;
     }
 
     Dataframe *create_dataframe(string msg, string dest_mac)
@@ -122,11 +134,9 @@ public:
         // Called if current node is not destination
         routing_table.at(frame->dest_mac)->send_in_link(mac_addr, frame);
     }
-
-   
 };
 
-void Link:: send_in_link(string curr_mac, Dataframe *df)
+void Link::send_in_link(string curr_mac, Dataframe *df)
 {
 
     int next_node = get_next_node(mac_to_id.at(curr_mac));
