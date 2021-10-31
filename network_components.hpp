@@ -13,12 +13,14 @@ class Link
     int index;
 
 public:
+    static int assign_link_id;
     int link_id;
 
     Link(vector<Node *> &node_list, bool direction = false)
     {
         this->node_list = node_list;
         this->direction = direction;
+        link_id = ++assign_link_id;
         index = 0;
     }
 
@@ -44,11 +46,13 @@ private:
     unordered_map<string, Link *> routing_table;
 
 public:
+    static int assign_node_id;
     int node_id;
-    Node(std::string mac_addr, int node_id, vector<Link *> &links, unordered_map<string, Link *> &routing_table)
+
+    Node(std::string mac_addr, vector<Link *> &links, unordered_map<string, Link *> &routing_table)
     {
         this->mac_addr = mac_addr;
-        this->node_id = node_id;
+        node_id = ++assign_node_id;
         this->links = links;
         this->routing_table = routing_table;
         //this->token = token;
