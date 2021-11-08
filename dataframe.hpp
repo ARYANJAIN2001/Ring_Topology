@@ -9,9 +9,8 @@ public:
     int seq_no;
     string src_mac, dest_mac;
     int sender_id;
-    
     int broadcast_sender;
-
+    unordered_set<int>links_visited;
     Dataframe(string data, int seq_no, string src_mac, string dest_mac,int sender_id )
     {
         this->data = data;
@@ -20,5 +19,6 @@ public:
         this->dest_mac = dest_mac;
         this->sender_id = sender_id;
         broadcast_sender = -1;
+        links_visited.clear();
     }
 };
